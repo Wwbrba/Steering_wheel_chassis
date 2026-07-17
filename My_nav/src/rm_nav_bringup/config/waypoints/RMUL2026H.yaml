@@ -1,0 +1,103 @@
+points:
+  home:
+    frame_id: map
+    position:
+      x: 9.643587112426758
+      y: -5.872884273529053
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+  supply_area:
+    frame_id: map
+    position:
+      x: 9.356651306152344
+      y: -0.4604811668395996
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+  start:
+    frame_id: map
+    position:
+      x: 0.015309810638427734
+      y: -0.044548749923706055
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+  exhibit_1:
+    frame_id: map
+    position:
+      x: 4.639957904815674
+      y: -5.270663738250732
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+  exhibit_2:
+    frame_id: map
+    position:
+      x: 5.020507335662842
+      y: -0.5071349143981934
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+  charge_area:
+    frame_id: map
+    position:
+      x: 0.21555447578430176
+      y: -5.414446830749512
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+tasks:
+  home:
+    message: '大家好，我们现在到达的是起始展示点。
+      这里可以介绍机器人系统的整体功能。
+      当前演示的是到点后自动触发讲解任务。
+      '
+
+  supply_area:
+    message: '现在我们来到了补给区。
+      这里可以介绍机器人系统的补给功能。
+      当前演示的是到点后自动触发讲解任务。
+      '
+
+  start:
+    message: '现在我们来到了起始点。
+      这里可以介绍机器人系统的整体功能。
+      当前演示的是到点后自动触发讲解任务。
+      '
+
+  exhibit_1:
+    message: '现在我们来到了展位1。
+      这里可以介绍机器人系统的功能。
+      当前演示的是到点后自动触发讲解任务。
+      '
+
+  exhibit_2:
+    message: '现在我们来到了展位2。
+      这里可以介绍机器人系统的功能。
+      当前演示的是到点后自动触发讲解任务。
+      '
+      
+  charge_area:
+    message: '现在我们来到了充电区。
+      这里可以介绍机器人系统的充电功能。
+      当前演示的是到点后自动触发讲解任务。
+      '

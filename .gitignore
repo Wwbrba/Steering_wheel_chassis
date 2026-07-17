@@ -1,0 +1,10 @@
+build/
+install/
+log/
+.vscode/
+*.db
+*.db-shm
+*.db-wal
+browse.vc.db
+browse.vc.db-wal
+browse.vc.db-wal

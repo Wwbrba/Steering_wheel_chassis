@@ -1,0 +1,32 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/opt/ros/humble/include/**",
+        "/home/nuc/桌面/Steering_wheel_chassis/My_nav/src/driver/Livox-SDK2/include/**",
+        "/home/nuc/桌面/Steering_wheel_chassis/My_nav/src/driver/rm_serial_driver/include/**",
+        "/home/nuc/桌面/Steering_wheel_chassis/My_nav/src/gazebo/livox_laser_simulation_RO2/include/**",
+        "/home/nuc/桌面/Steering_wheel_chassis/My_nav/src/localization/FAST_LIO/include/**",
+        "/home/nuc/桌面/Steering_wheel_chassis/My_nav/src/localization/icp_registration/include/**",
+        "/home/nuc/桌面/Steering_wheel_chassis/My_nav/src/localization/point_lio/include/**",
+        "/home/nuc/桌面/Steering_wheel_chassis/My_nav/src/navigation/costmap_converter/costmap_converter/include/**",
+        "/home/nuc/桌面/Steering_wheel_chassis/My_nav/src/navigation/teb_local_planner/teb_local_planner/include/**",
+        "/home/nuc/桌面/Steering_wheel_chassis/My_nav/src/processing/fake_vel_transform/include/**",
+        "/home/nuc/桌面/Steering_wheel_chassis/My_nav/src/processing/imu_complementary_filter/include/**",
+        "/home/nuc/桌面/Steering_wheel_chassis/My_nav/src/processing/linefit_ground_segementation_ros2/linefit_ground_segmentation/include/**",
+        "/home/nuc/桌面/Steering_wheel_chassis/My_nav/src/processing/pointcloud_to_laserscan/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ros2",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++17"
+    }
+  ],
+  "version": 4
+}
