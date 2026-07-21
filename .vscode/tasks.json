@@ -1,0 +1,29 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "My_nav",			
+			"type": "colcon",
+			"options": {
+                	"cwd": "${workspaceFolder}/My_nav"
+            	},
+			"args": [
+				"build",
+				"--symlink-install",
+				"--event-handlers",
+				"console_cohesion+",
+				"--base-paths",
+				"${workspaceFolder}/My_nav",
+				"--cmake-args",
+				"-DCMAKE_BUILD_TYPE=Debug"
+			],
+			"problemMatcher": [
+				"$colcon-gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+		}
+	]
+}

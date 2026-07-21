@@ -1,10 +1,8 @@
 build/
 install/
 log/
-.vscode/
+c_cpp_properties.json
+settings.json
 *.db
 *.db-shm
 *.db-wal
-browse.vc.db
-browse.vc.db-wal
-browse.vc.db-wal
