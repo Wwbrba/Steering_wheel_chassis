@@ -13,6 +13,17 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
+install(
+  DIRECTORY
+    launch
+    config
+    map
+    PCD
+    rviz
+    urdf
+  DESTINATION share/${PROJECT_NAME}
+)
+
 ament_auto_package(
   INSTALL_TO_SHARE
   launch
