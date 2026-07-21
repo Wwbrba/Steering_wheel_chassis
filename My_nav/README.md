@@ -1,4 +1,4 @@
-# RM_Navigation - ROS2 导航仿真与实车系统
+# RM_Navigation - ROS2 导航仿真与实车系统学习文档
 
 > 基于ROS2的全向移动机器人导航系统，支持Gazebo仿真和真实机器人部署
 
@@ -34,7 +34,8 @@ sudo apt update && sudo apt install -y \
     ros-humble-nav2-bringup \
     ros-humble-slam-toolbox \
     ros-humble-pointcloud-to-laserscan \
-    gazebo-classic
+    gazebo
+rosdep install --from-paths src --ignore-src -r -y
 
 # 安装Livox SDK2
 git clone https://github.com/Livox-SDK/Livox-SDK2.git
