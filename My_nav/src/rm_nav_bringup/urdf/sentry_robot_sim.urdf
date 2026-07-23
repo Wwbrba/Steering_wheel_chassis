@@ -236,7 +236,7 @@
     <visual>
       <origin rpy="1.5707963267948966 0 3.141592653589793" xyz="0.025 -0.0265 -0.025"/>
       <geometry>
-        <mesh filename="model://mid360.stl" scale="0.0008 0.0008 0.0008"/>
+        <mesh filename="model://airy_lite.stl" scale="0.0008 0.0008 0.0008"/>
       </geometry>
     </visual>
   </link>

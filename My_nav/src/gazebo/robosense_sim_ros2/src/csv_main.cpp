@@ -1,6 +1,3 @@
-//
-// Created by lfc on 2021/3/1.
-//
 #include "robosense_sim/csv_reader.hpp"
 
 int main(int argc, char const* argv[]) {

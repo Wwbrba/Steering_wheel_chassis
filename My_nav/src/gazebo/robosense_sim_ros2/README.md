@@ -12,7 +12,7 @@ Default interface:
 - frame: `rslidar`
 - fields: `x`, `y`, `z`, `intensity`, `ring`, `timestamp`
 - rate: 10 Hz
-- rings: 96
+- rings: 24
 
 Usage from xacro:
 

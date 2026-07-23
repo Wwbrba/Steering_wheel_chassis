@@ -1,7 +1,3 @@
-//
-// Created by lfc on 2021/3/1.
-//
-
 #ifndef SRC_GAZEBO_CSV_READER_HPP
 #define SRC_GAZEBO_CSV_READER_HPP
 

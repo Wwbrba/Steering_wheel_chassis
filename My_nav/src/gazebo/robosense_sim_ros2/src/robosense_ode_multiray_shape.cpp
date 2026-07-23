@@ -1,7 +1,3 @@
-//
-// Created by lfc on 2021/2/28.
-//
-
 #include <gazebo/common/Assert.hh>
 #include <gazebo/common/Exception.hh>
 #include <gazebo/physics/World.hh>

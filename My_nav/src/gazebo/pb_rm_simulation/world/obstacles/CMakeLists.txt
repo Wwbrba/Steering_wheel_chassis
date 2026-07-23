@@ -22,7 +22,7 @@ set(OBSTACLE_SOURCES
     src/obstacle10.cc
     src/obstacle11.cc
     src/obstacle12.cc
-    src/obstacle13.cc   # 你有 obstacle13.cc！别漏了
+    src/obstacle13.cc 
     src/obstacles.cc
 )
 

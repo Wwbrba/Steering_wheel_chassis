@@ -1,7 +1,3 @@
-//
-// Created by lfc on 2021/2/28.
-//
-
 #ifndef ROBOSENSE_SIM_ODE_MULTIRAY_SHAPE_H
 #define ROBOSENSE_SIM_ODE_MULTIRAY_SHAPE_H
 #include <gazebo/physics/MultiRayShape.hh>

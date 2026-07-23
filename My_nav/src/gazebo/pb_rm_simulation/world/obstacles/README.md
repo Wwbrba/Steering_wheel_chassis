@@ -1,22 +1,14 @@
 # 启动动态障碍地图
 ```sh
 # 启动 Gazebo 加载该 world
-gazebo /home/ros2/Desktop/pb_rmsimulation/src/rm_simulation/pb_rm_simulation/world/obstacles/worlds/obstacle1.world --verbose
+gazebo /home/nuc/Steering_wheel_chassis/My_nav/src/gazebo/pb_rm_simulation/world/obstacles/worlds/obstacle1.world --verbose
 ```
-
-
 - src/obstacle1.cc:
-
-
-
-
-
-
 
 # 运动路径库编译
 ```sh
 # 1. 进入插件目录
-cd src/rm_simulation/pb_rm_simulation/world/obstacles
+cd My_nav/src/pb_rm_simulation/world/obstacles
 
 # 2. 创建build目录（若已存在，先清空）
 mkdir -p build && cd build

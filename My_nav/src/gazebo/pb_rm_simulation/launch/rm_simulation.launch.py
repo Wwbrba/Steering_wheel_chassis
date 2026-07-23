@@ -2,7 +2,7 @@
 
 import os
 
-from ament_index_python.packages import get_package_share_directory, get_package_share_path
+from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
 from launch.substitutions import LaunchConfiguration, Command
@@ -65,9 +65,15 @@ def generate_launch_description():
     robot_description = LaunchConfiguration('robot_description')
 
     # Set Gazebo plugin path
-    append_enviroment = AppendEnvironmentVariable(
+    append_plugin_path = AppendEnvironmentVariable(
         'GAZEBO_PLUGIN_PATH',
-        os.path.join(os.path.join(get_package_share_directory('pb_rm_simulation'), 'meshes', 'obstacles', 'obstacle_plugin', 'lib'))
+        os.path.join(os.path.join(get_package_share_directory('pb_rm_simulation'), 'world', 'obstacles', 'lib'))
+    )
+
+    # Set Gazebo model path
+    append_model_path = AppendEnvironmentVariable(
+    'GAZEBO_MODEL_PATH',
+    os.path.join(get_package_share_directory('pb_rm_simulation'), 'meshes', 'obstacles')
     )
 
     declare_use_sim_time_cmd = DeclareLaunchArgument(
@@ -81,6 +87,8 @@ def generate_launch_description():
         default_value=WorldType.RMUL2026H,#thth
         description='Choose <RMUC> or <RMUL>'
     )
+
+    declare_rviz_cmd = DeclareLaunchArgument('rviz', default_value='false', description='Launch RViz')
 
     declare_rviz_config_file_cmd = DeclareLaunchArgument(
         'rviz_config_file',
@@ -164,10 +172,12 @@ def generate_launch_description():
     ld = LaunchDescription()
 
     # Set environment variables
-    ld.add_action(append_enviroment)
+    ld.add_action(append_plugin_path)
+    ld.add_action(append_model_path)
 
     ld.add_action(declare_use_sim_time_cmd)
     ld.add_action(declare_world_cmd)
+    ld.add_action(declare_rviz_cmd)    
     ld.add_action(declare_rviz_config_file_cmd)
     ld.add_action(declare_robot_description_cmd)
     ld.add_action(gazebo_client_launch)
@@ -177,7 +187,6 @@ def generate_launch_description():
     ld.add_action(bringup_RMUC_cmd_group) # type: ignore
     ld.add_action(bringup_RMUL2026H_cmd_group) #thth type: ignore
 
-    # Uncomment this line if you want to start RViz
     ld.add_action(start_rviz_cmd)
 
     return ld

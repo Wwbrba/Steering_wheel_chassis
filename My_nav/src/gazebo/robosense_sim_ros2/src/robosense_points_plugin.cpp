@@ -185,7 +185,8 @@ namespace gazebo
             *out_y = point.Y();
             *out_z = point.Z();
             *out_intensity = intensity;
-            *out_ring = static_cast<uint16_t>(pair.first % 96);
+            // Airy Lite publishes 24 laser channels, numbered 0 through 23.
+            *out_ring = static_cast<uint16_t>(pair.first % 24);
             *out_timestamp = scan_timestamp + point_index * point_period;
 
             ++out_x;
