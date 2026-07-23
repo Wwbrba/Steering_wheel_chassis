@@ -34,10 +34,10 @@
             fov_degree:    360.0
             det_range:     100.0
             extrinsic_est_en:  false      # true: enable the online estimation of IMU-LiDAR extrinsic
-            extrinsic_T: [ -0.011, -0.02329, 0.04412 ] # Real
-            extrinsic_R: [1., 0., 0.,
-                          0., 1., 0.,
-                          0., 0., 1.]
+            extrinsic_T: [ 0.0066300002, -0.0173199996, -0.0082000000 ] # Airy Lite DIFOP
+            extrinsic_R: [ 0.9996182551,  0.0257997346,  0.0098852313,
+                           -0.0258598391,  0.9996475638,  0.0060014165,
+                           -0.0097269125, -0.0062547560,  0.9999331304 ]
 
         publish:
             path_en: true                # true: publish Path
@@ -49,6 +49,5 @@
 
         pcd_save:
             pcd_save_en: true                # true: save pcd files; false: do not save pcd files
-            pcd_path: "/home/nuc/Steering_wheel_chassis/My_nav/src/rm_nav_bringup/PCD/test_map.pcd"
             interval: -1                 # how many LiDAR frames saved in each pcd file; 
                                         # -1 : all frames will be saved in ONE pcd file, may lead to memory crash when having too much frames.

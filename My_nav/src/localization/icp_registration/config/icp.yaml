@@ -3,7 +3,7 @@
     use_sim_time: false 
     rough_leaf_size: 0.4
     refine_leaf_size: 0.1
-    pcd_path: "/home/zcf/Downloads/RMUL.pcd"
+    pcd_path: "/home/nuc/Steering_wheel_chassis/My_nav/src/rm_nav_bringup/PCD/RMUL.pcd"
     map_frame_id: "map"
     odom_frame_id: "odom"
     # Livox: laser_frame_id: "livox_frame", pointcloud_topic: "/livox/lidar/pointcloud"

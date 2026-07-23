@@ -34,9 +34,11 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
-        body:
+        base_link:
           Value: true
-        camera_init:
+        lidar_odom:
+          Value: true
+        rslidar:
           Value: true
       Marker Scale: 1
       Name: TF
@@ -44,9 +46,10 @@ Visualization Manager:
       Show Axes: true
       Show Names: false
       Tree:
-        camera_init:
-          body:
-            {}
+        lidar_odom:
+          base_link:
+            rslidar:
+              {}
       Update Interval: 0
       Value: true
     - Angle Tolerance: 0.10000000149011612
@@ -119,8 +122,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 11.062739372253418
-        Min Value: -13.864188194274902
+        Max Value: 3.9747323989868164
+        Min Value: -0.9573400616645813
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -187,8 +190,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: -9999
-        Min Value: 9999
+        Max Value: 4.277785301208496
+        Min Value: -2.69952130317688
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -221,7 +224,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 0; 0; 0
-    Fixed Frame: camera_init
+    Fixed Frame: lidar_odom
     Frame Rate: 30
   Name: root
   Tools:
@@ -264,7 +267,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 216.99887084960938
+      Distance: 17.955053329467773
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -279,10 +282,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.5697963237762451
+      Pitch: 1.024796962738037
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz_default_plugins)
-      Yaw: 4.88355827331543
+      Yaw: 3.768552541732788
     Saved: ~
 Window Geometry:
   Displays:
