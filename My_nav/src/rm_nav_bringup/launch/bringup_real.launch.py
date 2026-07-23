@@ -4,8 +4,9 @@ import yaml
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, GroupAction, TimerAction
+from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, GroupAction, TimerAction, SetEnvironmentVariable
 from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Command
 from launch.conditions import LaunchConfigurationEquals, LaunchConfigurationNotEquals, IfCondition
@@ -27,7 +28,8 @@ def generate_launch_description():
     get_package_share_directory('rm_nav_bringup'), 'config', 'reality', 'measurement_params_real.yaml')))
     robot_description = Command(['xacro ', os.path.join(
     get_package_share_directory('rm_nav_bringup'), 'urdf', 'sentry_robot_real.xacro'),
-    ' xyz:=', launch_params['base_link2livox_frame']['xyz'], ' rpy:=', launch_params['base_link2livox_frame']['rpy']])
+    # Livox: launch_params['base_link2livox_frame']
+    ' xyz:=', launch_params['base_link2rslidar_frame']['xyz'], ' rpy:=', launch_params['base_link2rslidar_frame']['rpy']])
     ################################# robot_description parameters end ################################
 
     ########################## linefit_ground_segementation parameters start ##########################
@@ -57,14 +59,16 @@ def generate_launch_description():
 
     ################################ icp_registration parameters start ################################
     icp_pcd_dir = PathJoinSubstitution([rm_nav_bringup_dir, 'PCD', world]), ".pcd"
-    icp_registration_params_dir = os.path.join(rm_nav_bringup_dir, 'config', 'simulation', 'icp_registration_sim.yaml')
+    # Previous code accidentally loaded the simulation/Livox ICP configuration here.
+    icp_registration_params_dir = os.path.join(rm_nav_bringup_dir, 'config', 'reality', 'icp_registration_real.yaml')
     ################################# icp_registration parameters end #################################
 
     ############################# pointcloud_downsampling parameters start ############################
     pointcloud_downsampling_config_dir = os.path.join(rm_nav_bringup_dir, 'config', 'reality', 'pointcloud_downsampling_real.yaml')
     ############################# pointcloud_downsampling parameters start ############################
 
-    ####################### Livox_ros_driver2 parameters start #######################
+    # ==================== Legacy Livox driver parameters (kept for comparison) ====================
+    """
     xfer_format   = 4    # 0-PointCloud2Msg(PointXYZRTL), 1-LivoxCustomMsg, 2-PclPxyziMsg, 3-LivoxImuMsg, 4-AllMsg
     multi_topic   = 0    # 0-All LiDARs share the same topic, 1-One LiDAR one topic
     data_src      = 0    # 0-lidar, others-Invalid data src
@@ -89,7 +93,8 @@ def generate_launch_description():
         {"user_config_path": user_config_path},
         {"cmdline_input_bd_code": cmdline_bd_code}
     ]
-    ####################### Livox_ros_driver2 parameters end #########################
+    """
+    # ==================== Legacy Livox driver parameters end ====================
 
     declare_use_sim_time_cmd = DeclareLaunchArgument(
         'use_sim_time',
@@ -132,18 +137,22 @@ def generate_launch_description():
         name='robot_state_publisher',
         parameters=[{
             'use_sim_time': use_sim_time,
-            'robot_description': robot_description
+            'robot_description': ParameterValue(robot_description, value_type=str)
         }],
         output='screen'
     )
 
     # Specify the actions
-    start_livox_ros_driver2_node = Node(
-        package='livox_ros_driver2',
-        executable='livox_ros_driver2_node',
-        name='livox_lidar_publisher',
-        output='screen',
-        parameters=livox_ros2_params
+    # Legacy Livox driver (disabled):
+    # start_livox_ros_driver2_node = Node(
+    #     package='livox_ros_driver2', executable='livox_ros_driver2_node',
+    #     name='livox_lidar_publisher', output='screen', parameters=livox_ros2_params)
+    start_rslidar_sdk_node = Node(
+        namespace='rslidar_sdk',
+        package='rslidar_sdk',
+        executable='rslidar_sdk_node',
+        name='rslidar_sdk_node',
+        output='screen'
     )
 
     bringup_imu_complementary_filter_node = Node(
@@ -159,7 +168,8 @@ def generate_launch_description():
             {'gain_mag': 0.01},
         ],
         remappings=[
-            ('/imu/data_raw', '/livox/imu'),
+            # Livox: ('/imu/data_raw', '/livox/imu'),
+            ('/imu/data_raw', '/rslidar_imu_data'),
         ]
     )
 
@@ -175,7 +185,8 @@ def generate_launch_description():
         remappings=[('cloud_in',  ['/segmentation/obstacle']),
                     ('scan',  ['/scan'])],
         parameters=[{
-            'target_frame': 'livox_frame',
+            # Livox: 'livox_frame'
+            'target_frame': 'rslidar',
             'transform_tolerance': 0.01,
             'min_height': -1.0,
             'max_height': 0.1,
@@ -217,7 +228,7 @@ def generate_launch_description():
                 executable='fastlio_mapping',
                 parameters=[
                     fastlio_mid360_params,
-                    {use_sim_time: use_sim_time}
+                    {'use_sim_time': use_sim_time}
                 ],
                 output='screen'
             ),
@@ -347,6 +358,10 @@ def generate_launch_description():
 
     ld = LaunchDescription()
 
+    # Use the DDS implementation required by the official rslidar_sdk Humble
+    # launcher consistently across all nodes in this process.
+    ld.add_action(SetEnvironmentVariable('RMW_IMPLEMENTATION', 'rmw_cyclonedds_cpp'))
+
     # Declare the launch options
     ld.add_action(declare_use_sim_time_cmd)
     ld.add_action(declare_use_lio_rviz_cmd)
@@ -357,7 +372,8 @@ def generate_launch_description():
     ld.add_action(declare_LIO_cmd)
     
     ld.add_action(start_robot_state_publisher_cmd)
-    ld.add_action(start_livox_ros_driver2_node)
+    # Livox: ld.add_action(start_livox_ros_driver2_node)
+    ld.add_action(start_rslidar_sdk_node)
     ld.add_action(bringup_imu_complementary_filter_node)
     ld.add_action(bringup_linefit_ground_segmentation_node)
     ld.add_action(bringup_pointcloud_to_laserscan_node)

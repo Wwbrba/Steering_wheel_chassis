@@ -12,7 +12,9 @@ slam_toolbox:
     # ROS Parameters
     odom_frame: odom 
     map_frame: map
-    base_frame: livox_frame 
+    # Livox used livox_frame directly. Use the robot body frame; rslidar is
+    # connected through the static base_link -> rslidar transform.
+    base_frame: base_link
     scan_topic: /scan
     mode: mapping #localization
 

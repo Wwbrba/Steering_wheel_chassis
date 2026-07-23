@@ -869,7 +869,8 @@ void Preprocess::pub_func(PointCloudXYZI &pl, const rclcpp::Time &ct)
   pl.height = 1; pl.width = pl.size();
   sensor_msgs::msg::PointCloud2 output;
   pcl::toROSMsg(pl, output);
-  output.header.frame_id = "livox";
+  // Legacy Livox debug frame: "livox"
+  output.header.frame_id = "rslidar";
   output.header.stamp = ct;
 }
 

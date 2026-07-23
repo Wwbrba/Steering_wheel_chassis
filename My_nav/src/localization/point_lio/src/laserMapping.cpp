@@ -248,7 +248,8 @@ void publish_frame_body(
   sensor_msgs::msg::PointCloud2 laserCloudmsg;
   pcl::toROSMsg(*laserCloudIMUBody, laserCloudmsg);
   laserCloudmsg.header.stamp = get_ros_time(lidar_end_time);
-  laserCloudmsg.header.frame_id = "livox_frame";
+  // Legacy Livox frame: "livox_frame"
+  laserCloudmsg.header.frame_id = "rslidar";
   pubLaserCloudFull_body->publish(laserCloudmsg);
   // publish_count -= PUBFRAME_PERIOD;
 }
@@ -283,7 +284,8 @@ void publish_odometry(
   std::unique_ptr<tf2_ros::Buffer> & tf_buffer, rclcpp::Logger logger_)
 {
   odomAftMapped.header.frame_id = "lidar_odom";
-  odomAftMapped.child_frame_id = "livox_frame";
+  // Legacy Livox frame: "livox_frame"
+  odomAftMapped.child_frame_id = "rslidar";
   if (publish_odometry_without_downsample) {
     odomAftMapped.header.stamp = get_ros_time(time_current);
   } else {
@@ -300,12 +302,13 @@ void publish_odometry(
     // Get the transform from base_link to livox_frame
     try {
       livox_to_base_link_transform =
-        tf_buffer->lookupTransform("livox_frame", "base_link", odomAftMapped.header.stamp);
+        // Legacy Livox target frame: "livox_frame"
+        tf_buffer->lookupTransform("rslidar", "base_link", odomAftMapped.header.stamp);
       transform_acquired =
         true;  // Set the flag to true indicating that the transform has been acquired
     } catch (tf2::TransformException & ex) {
       RCLCPP_ERROR(
-        logger_, "Failed to lookup transform from base_link to livox_frame: %s", ex.what());
+        logger_, "Failed to lookup transform from base_link to rslidar: %s", ex.what());
       return;
     }
   }

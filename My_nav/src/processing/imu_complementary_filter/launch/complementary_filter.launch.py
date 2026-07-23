@@ -17,8 +17,13 @@ def generate_launch_description():
                     {'gain_acc': 0.01},
                     {'gain_mag': 0.01},
                 ],
+                # Legacy Livox (disabled)
+                # remappings=[
+                # 	('/imu/data_raw', '/livox/imu'),
+                # ]
+                # robosense
                 remappings=[
-                	('/imu/data_raw', '/livox/imu'),
+                	('/imu/data_raw', '/rslidar_imu_data'),
                 ]
             )
         ]

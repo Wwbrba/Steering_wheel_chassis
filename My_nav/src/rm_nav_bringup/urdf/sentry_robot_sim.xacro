@@ -13,7 +13,7 @@
     </inertial>
   </xacro:macro>
 
-  <!-- base_link to livox_frame -->
+  <!-- base_link to rslidar (legacy frame: livox_frame) -->
   <xacro:arg name="xyz" default="0.12 0.0 0.175" />
   <xacro:arg name="rpy" default="0 0 0" />
 
@@ -198,7 +198,7 @@
   <gazebo reference="imu_link">
     <material>Gazebo/BuildingFrame</material>
   </gazebo>
-  <gazebo reference="livox_frame">
+  <gazebo reference="rslidar">
     <material>Gazebo/LightBlueLaser</material>
   </gazebo>
 
@@ -234,26 +234,27 @@
     </plugin>
   </gazebo>
 
-  <!-- mid360_imu plugin -->
+  <!-- Airy Lite IMU simulation -->
   <!-- https://github.com/ros-simulation/gazebo_ros_pkgs/wiki/ROS-2-Migration:-IMU-Sensors -->
   <gazebo reference="imu_link">
-    <sensor name="mid360_imu" type="imu">
+    <sensor name="airy_lite_imu" type="imu">
       <always_on>true</always_on>
       <update_rate>100</update_rate>
       <plugin name="imu_plugin" filename="libgazebo_ros_imu_sensor.so">
         <ros>
           <namespace>/</namespace>
-          <remapping>~/out:=/livox/imu</remapping>
+          <!-- Livox: ~/out:=/livox/imu -->
+          <remapping>~/out:=/rslidar_imu_data</remapping>
         </ros>
         <frame_name>imu_link</frame_name>
       </plugin>
     </sensor>
   </gazebo>
 
-  <!-- Livox-Mid360  -->
-  <xacro:include filename="$(find ros2_livox_simulation)/urdf/mid360.xacro" />
-  <xacro:mid360 name="livox_frame" parent="base_link" topic="/livox/lidar">
+  <!-- Legacy Livox include/macro: ros2_livox_simulation, xacro:mid360 -->
+  <xacro:include filename="$(find robosense_sim_ros2)/urdf/airy_lite.xacro" />
+  <xacro:airy_lite name="rslidar" parent="base_link" topic="/rslidar_points">
     <origin xyz="$(arg xyz)" rpy="$(arg rpy)" />
-  </xacro:mid360>
+  </xacro:airy_lite>
 
 </robot>

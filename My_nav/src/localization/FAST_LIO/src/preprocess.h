@@ -16,7 +16,8 @@ enum LID_TYPE
   AVIA = 1,
   VELO16,
   OUST64,
-  MID360
+  MID360,
+  AIRY = 5
 };  //{1, 2, 3}
 enum TIME_UNIT
 {
@@ -82,6 +83,23 @@ POINT_CLOUD_REGISTER_POINT_STRUCT(velodyne_ros::Point,
                                   (float, x, x)(float, y, y)(float, z, z)(float, intensity,
                                                                           intensity)(float, time, time)(uint16_t, ring,
                                                                                                         ring))
+
+// RoboSense SDK PointCloud2 layout (POINT_TYPE_XYZIRT).
+namespace robosense_ros
+{
+struct EIGEN_ALIGN16 Point
+{
+  PCL_ADD_POINT4D;
+  float intensity;
+  uint16_t ring;
+  double timestamp;
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+};
+}  // namespace robosense_ros
+POINT_CLOUD_REGISTER_POINT_STRUCT(robosense_ros::Point,
+                                  (float, x, x)(float, y, y)(float, z, z)
+                                  (float, intensity, intensity)(uint16_t, ring, ring)
+                                  (double, timestamp, timestamp))
 
 namespace ouster_ros
 {
@@ -159,6 +177,7 @@ private:
   void oust64_handler(const sensor_msgs::msg::PointCloud2::UniquePtr &msg);
   void velodyne_handler(const sensor_msgs::msg::PointCloud2::UniquePtr &msg);
   void mid360_handler(const sensor_msgs::msg::PointCloud2::UniquePtr &msg);
+  void rslidar_handler(const sensor_msgs::msg::PointCloud2::UniquePtr &msg);
   void default_handler(const sensor_msgs::msg::PointCloud2::UniquePtr &msg);
   void give_feature(PointCloudXYZI &pl, vector<orgtype> &types);
   void pub_func(PointCloudXYZI &pl, const rclcpp::Time &ct);

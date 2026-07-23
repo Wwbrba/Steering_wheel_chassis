@@ -565,7 +565,8 @@ void publish_frame_body(rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::Shared
     sensor_msgs::msg::PointCloud2 laserCloudmsg;
     pcl::toROSMsg(*laserCloudIMUBody, laserCloudmsg);
     laserCloudmsg.header.stamp = get_ros_time(lidar_end_time);
-    laserCloudmsg.header.frame_id = "livox_frame";
+    // Legacy Livox frame: "livox_frame"
+    laserCloudmsg.header.frame_id = "rslidar";
     pubLaserCloudFull_body->publish(laserCloudmsg);
     publish_count -= PUBFRAME_PERIOD;
 }
@@ -632,7 +633,8 @@ void publish_odometry(const rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPt
                                 rclcpp::Logger logger_)
 {
     odomAftMapped.header.frame_id = "lidar_odom";
-    odomAftMapped.child_frame_id = "livox_frame";
+    // Legacy Livox frame: "livox_frame"
+    odomAftMapped.child_frame_id = "rslidar";
     odomAftMapped.header.stamp = get_ros_time(lidar_end_time);
     set_posestamp(odomAftMapped.pose);
     pubOdomAftMapped->publish(odomAftMapped);
@@ -654,10 +656,11 @@ void publish_odometry(const rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPt
   if (!transform_acquired) {
       // Get the transform from base_link to livox_frame
       try {
-          livox_to_base_link_transform = tf_buffer_->lookupTransform("livox_frame", "base_link", odomAftMapped.header.stamp);
+          // Legacy Livox target frame: "livox_frame"
+          livox_to_base_link_transform = tf_buffer_->lookupTransform("rslidar", "base_link", odomAftMapped.header.stamp);
           transform_acquired = true; // Set the flag to true indicating that the transform has been acquired
       } catch (tf2::TransformException &ex) {
-          RCLCPP_ERROR(logger_, "Failed to lookup transform from base_link to livox_frame: %s", ex.what());
+          RCLCPP_ERROR(logger_, "Failed to lookup transform from base_link to rslidar: %s", ex.what());
           return;
       }
   }
@@ -831,8 +834,9 @@ public:
         this->declare_parameter<bool>("publish.scan_bodyframe_pub_en", true);
         this->declare_parameter<int>("max_iteration", 4);
         this->declare_parameter<string>("map_file_path", "");
-        this->declare_parameter<string>("common.lid_topic", "/livox/lidar");
-        this->declare_parameter<string>("common.imu_topic", "/livox/imu");
+        // Legacy Livox defaults: /livox/lidar and /livox/imu
+        this->declare_parameter<string>("common.lid_topic", "/rslidar_points");
+        this->declare_parameter<string>("common.imu_topic", "/rslidar_imu_data");
         this->declare_parameter<bool>("common.time_sync_en", false);
         this->declare_parameter<double>("common.time_offset_lidar_to_imu", 0.0);
         this->declare_parameter<double>("filter_size_corner", 0.5);
@@ -867,8 +871,8 @@ public:
         this->get_parameter_or<bool>("publish.scan_bodyframe_pub_en", scan_body_pub_en, true);
         this->get_parameter_or<int>("max_iteration", NUM_MAX_ITERATIONS, 4);
         this->get_parameter_or<string>("map_file_path", map_file_path, "");
-        this->get_parameter_or<string>("common.lid_topic", lid_topic, "/livox/lidar");
-        this->get_parameter_or<string>("common.imu_topic", imu_topic,"/livox/imu");
+        this->get_parameter_or<string>("common.lid_topic", lid_topic, "/rslidar_points");
+        this->get_parameter_or<string>("common.imu_topic", imu_topic,"/rslidar_imu_data");
         this->get_parameter_or<bool>("common.time_sync_en", time_sync_en, false);
         this->get_parameter_or<double>("common.time_offset_lidar_to_imu", time_diff_lidar_to_imu, 0.0);
         this->get_parameter_or<double>("filter_size_corner",filter_size_corner_min,0.5);
@@ -951,7 +955,11 @@ public:
         {
             sub_pcl_pc_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(lid_topic, rclcpp::SensorDataQoS(), standard_pcl_cbk);
         }
-        sub_imu_ = this->create_subscription<sensor_msgs::msg::Imu>(imu_topic, 10, imu_cbk);
+        // Gazebo and many hardware IMU drivers publish with SensorDataQoS
+        // (best effort). A default reliable subscription is incompatible and
+        // leaves FAST-LIO waiting forever for IMU data.
+        sub_imu_ = this->create_subscription<sensor_msgs::msg::Imu>(
+            imu_topic, rclcpp::SensorDataQoS(), imu_cbk);
         pubLaserCloudFull_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/cloud_registered", 20);
         pubLaserCloudFull_body_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/cloud_registered_body", 20);
         pubLaserCloudEffect_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/cloud_effected", 20);

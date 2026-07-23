@@ -21,12 +21,13 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time')
     declare_use_sim_time_cmd = DeclareLaunchArgument(
         'use_sim_time',
-        default_value='True',
-        description='Use simulation (Gazebo) clock if true')
+        default_value='False',
+        description='Use system clock for the real Airy Lite; set true for Gazebo')
 
 
     ########################## linefit_ground_segementation parameters start ##########################
-    segmentation_params = os.path.join(rm_nav_bringup_dir, 'config', 'simulation', 'segmentation_sim.yaml')
+    # Livox simulation: config/simulation/segmentation_sim.yaml
+    segmentation_params = os.path.join(rm_nav_bringup_dir, 'config', 'reality', 'segmentation_real.yaml')
     ########################## linefit_ground_segementation parameters end ############################
 
 
@@ -44,7 +45,8 @@ def generate_launch_description():
             {'gain_mag': 0.01},
         ],
         remappings=[
-            ('/imu/data_raw', '/livox/imu'),
+            # Livox: ('/imu/data_raw', '/livox/imu'),
+            ('/imu/data_raw', '/rslidar_imu_data'),
         ]
     )
 
@@ -60,7 +62,8 @@ def generate_launch_description():
         remappings=[('cloud_in',  ['/segmentation/obstacle']),
                     ('scan',  ['/scan'])],
         parameters=[{
-            'target_frame': 'livox_frame',
+            # Livox: 'target_frame': 'livox_frame'
+            'target_frame': 'rslidar',
             'transform_tolerance': 0.01,
             'min_height': -1.0,
             'max_height': 0.1,
@@ -96,4 +99,3 @@ def generate_launch_description():
     ld.add_action(bringup_fake_vel_transform_node)
 
     return ld
-

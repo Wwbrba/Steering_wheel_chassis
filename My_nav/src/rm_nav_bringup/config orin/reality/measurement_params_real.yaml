@@ -1,3 +1,4 @@
-base_link2livox_frame:
+# Livox: base_link2livox_frame
+base_link2rslidar_frame:
   xyz: "\"0.0 0.045 0.49\""
   rpy: "\"0.0  0.0  0.0\""

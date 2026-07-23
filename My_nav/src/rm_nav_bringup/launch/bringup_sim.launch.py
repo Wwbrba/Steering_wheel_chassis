@@ -27,7 +27,8 @@ def generate_launch_description():
     get_package_share_directory('rm_nav_bringup'), 'config', 'simulation', 'measurement_params_sim.yaml')))
     robot_description = Command(['xacro ', os.path.join(
     get_package_share_directory('rm_nav_bringup'), 'urdf', 'sentry_robot_sim.xacro'),
-    ' xyz:=', launch_params['base_link2livox_frame']['xyz'], ' rpy:=', launch_params['base_link2livox_frame']['rpy']])
+    # Livox: launch_params['base_link2livox_frame']
+    ' xyz:=', launch_params['base_link2rslidar_frame']['xyz'], ' rpy:=', launch_params['base_link2rslidar_frame']['rpy']])
     ################################# robot_description parameters end ################################
 
     ########################## linefit_ground_segementation parameters start ##########################
@@ -106,6 +107,8 @@ def generate_launch_description():
         launch_arguments={
             'use_sim_time': use_sim_time,
             'world': world,
+            # Launch arguments must remain substitutions; the included launch
+            # wraps this as ParameterValue when passing it to ROS nodes.
             'robot_description': robot_description,
             'rviz': 'False'}.items()
     )
@@ -116,6 +119,7 @@ def generate_launch_description():
         name='complementary_filter_gain_node',
         output='screen',
         parameters=[
+            {'use_sim_time': use_sim_time},
             {'do_bias_estimation': True},
             {'do_adaptive_gain': True},
             {'use_mag': False},
@@ -123,7 +127,8 @@ def generate_launch_description():
             {'gain_mag': 0.01},
         ],
         remappings=[
-            ('/imu/data_raw', '/livox/imu'),
+            # Livox: ('/imu/data_raw', '/livox/imu')
+            ('/imu/data_raw', '/rslidar_imu_data'),
         ]
     )
 
@@ -131,7 +136,7 @@ def generate_launch_description():
         package='linefit_ground_segmentation_ros',
         executable='ground_segmentation_node',
         output='screen',
-        parameters=[segmentation_params]
+        parameters=[segmentation_params, {'use_sim_time': use_sim_time}]
     )
 
     bringup_pointcloud_to_laserscan_node = Node(
@@ -139,7 +144,9 @@ def generate_launch_description():
         remappings=[('cloud_in',  ['/segmentation/obstacle']),
                     ('scan',  ['/scan'])],
         parameters=[{
-            'target_frame': 'livox_frame',
+            'use_sim_time': use_sim_time,
+            # Livox: 'livox_frame'
+            'target_frame': 'rslidar',
             'transform_tolerance': 0.05, #thth0325
             'min_height': -1.0,
             'max_height': 0.1,
@@ -180,7 +187,7 @@ def generate_launch_description():
                 executable='fastlio_mapping',
                 parameters=[
                     fastlio_mid360_params,
-                    {use_sim_time: use_sim_time}
+                    {'use_sim_time': use_sim_time}
                 ],
                 output='screen'
             ),
@@ -318,14 +325,21 @@ def generate_launch_description():
     ld.add_action(declare_localization_cmd)
     ld.add_action(declare_LIO_cmd)
 
+    # Start Gazebo first. Starting the consumers before /clock, the robot and
+    # the lidar plugin exist causes intermittent TF caches containing system
+    # time while sensor messages use simulation time.
     ld.add_action(start_rm_simulation)
-    ld.add_action(bringup_imu_complementary_filter_node)
-    ld.add_action(bringup_linefit_ground_segmentation_node)
-    ld.add_action(bringup_pointcloud_to_laserscan_node)
-    ld.add_action(bringup_LIO_group)
-    ld.add_action(start_localization_group)
-    ld.add_action(bringup_fake_vel_transform_node)
-    ld.add_action(start_mapping)
-    ld.add_action(start_navigation2)
+    ld.add_action(TimerAction(period=6.0, actions=[
+        bringup_imu_complementary_filter_node,
+        bringup_linefit_ground_segmentation_node,
+        bringup_pointcloud_to_laserscan_node,
+    ]))
+    ld.add_action(TimerAction(period=8.0, actions=[bringup_LIO_group]))
+    ld.add_action(TimerAction(period=12.0, actions=[
+        start_localization_group,
+        bringup_fake_vel_transform_node,
+        start_mapping,
+    ]))
+    ld.add_action(TimerAction(period=15.0, actions=[start_navigation2]))
 
     return ld

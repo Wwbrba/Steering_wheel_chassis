@@ -80,7 +80,7 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        livox_frame:
+        rslidar:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -127,7 +127,7 @@ Visualization Manager:
           Value: true
         lidar_odom:
           Value: true
-        livox_frame:
+        rslidar:
           Value: true
         map:
           Value: true
@@ -155,7 +155,7 @@ Visualization Manager:
                   {}
                 imu_link:
                   {}
-                livox_frame:
+                rslidar:
                   {}
                 wheel_1:
                   {}

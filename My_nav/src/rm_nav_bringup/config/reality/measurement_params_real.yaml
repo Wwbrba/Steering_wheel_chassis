@@ -1,3 +1,4 @@
-base_link2livox_frame:
+# Legacy Livox key (disabled): base_link2livox_frame:
+base_link2rslidar_frame:
   xyz: "\"0.0 0.0 0.0\""
   rpy: "\"3.1415926  0.0  0.0\""

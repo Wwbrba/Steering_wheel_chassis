@@ -128,7 +128,7 @@ ros2 launch foxglove_bridge foxglove_bridge_launch.xml
 ```
 
 ## [***<ins>2.1 Gazebo***]()
-1. ###  [***<ins>livox_laser_simulation_RO2***](src/rm_simulation/livox_laser_simulation_RO2) - MID360 gazebo-仿真包
+1. ### `robosense_sim_ROS2` - Airy Lite Gazebo 仿真包（原 Livox 仿真包保留用于对照）
 
 2. ### [***<ins>pb_rm_simulation***](src/rm_simulation/pb_rm_simulation): 启动仿真 
     - #### 1. 建模地图

@@ -85,6 +85,10 @@ void Preprocess::process(const sensor_msgs::msg::PointCloud2::UniquePtr &msg, Po
       mid360_handler(msg);
       break;
 
+    case AIRY:
+      rslidar_handler(msg);
+      break;
+
     default:
       default_handler(msg);
       break;
@@ -588,6 +592,39 @@ void Preprocess::default_handler(const sensor_msgs::msg::PointCloud2::UniquePtr 
   }
 }
 
+void Preprocess::rslidar_handler(const sensor_msgs::msg::PointCloud2::UniquePtr &msg)
+{
+  pl_surf.clear();
+  pl_corn.clear();
+  pl_full.clear();
+
+  pcl::PointCloud<robosense_ros::Point> cloud;
+  pcl::fromROSMsg(*msg, cloud);
+  if (cloud.empty())
+    return;
+
+  pl_surf.reserve(cloud.size());
+  const double first_timestamp = cloud.front().timestamp;
+  for (std::size_t i = 0; i < cloud.size(); ++i)
+  {
+    if (i % point_filter_num != 0 || cloud[i].ring >= N_SCANS)
+      continue;
+
+    PointType point;
+    point.x = cloud[i].x;
+    point.y = cloud[i].y;
+    point.z = cloud[i].z;
+    point.intensity = cloud[i].intensity;
+    point.normal_x = point.normal_y = point.normal_z = 0.0f;
+    // FAST-LIO stores the per-point offset from scan start in milliseconds.
+    point.curvature = static_cast<float>((cloud[i].timestamp - first_timestamp) * 1e3);
+
+    const float range_sq = point.x * point.x + point.y * point.y + point.z * point.z;
+    if (range_sq > blind * blind)
+      pl_surf.push_back(std::move(point));
+  }
+}
+
 void Preprocess::give_feature(pcl::PointCloud<PointType>& pl, vector<orgtype>& types)
 {
   int plsize = pl.size();
@@ -910,7 +947,8 @@ void Preprocess::pub_func(PointCloudXYZI& pl, const rclcpp::Time& ct)
   pl.width = pl.size();
   sensor_msgs::msg::PointCloud2 output;
   pcl::toROSMsg(pl, output);
-  output.header.frame_id = "livox";
+  // Legacy Livox debug frame: "livox"
+  output.header.frame_id = "rslidar";
   output.header.stamp = ct;
 }
 

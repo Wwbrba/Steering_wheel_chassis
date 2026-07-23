@@ -19,8 +19,8 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time')
     declare_use_sim_time_cmd = DeclareLaunchArgument(
         'use_sim_time',
-        default_value='True',
-        description='Use simulation (Gazebo) clock if true')
+        default_value='False',
+        description='Use system clock for the real Airy Lite; set true for Gazebo')
 
     # 外参数-use_lio_rviz
     use_lio_rviz = LaunchConfiguration('lio_rviz')
@@ -36,12 +36,14 @@ def generate_launch_description():
         description='Choose lio alogrithm: fastlio or pointlio')
 
     #################################### FAST_LIO parameters start ####################################
-    fastlio_mid360_params = os.path.join(rm_nav_bringup_dir, 'config', 'simulation', 'fastlio_mid360_sim.yaml')
+    # Livox simulation: config/simulation/fastlio_mid360_sim.yaml
+    fastlio_mid360_params = os.path.join(rm_nav_bringup_dir, 'config', 'reality', 'fastlio_mid360_real.yaml')
     fastlio_rviz_cfg_dir = os.path.join(rm_nav_bringup_dir, 'rviz', 'fastlio.rviz')
     ##################################### FAST_LIO parameters end #####################################
 
     ################################### POINT_LIO parameters start ####################################
-    pointlio_mid360_params = os.path.join(rm_nav_bringup_dir, 'config', 'simulation', 'pointlio_mid360_sim.yaml')
+    # Livox simulation: config/simulation/pointlio_mid360_sim.yaml
+    pointlio_mid360_params = os.path.join(rm_nav_bringup_dir, 'config', 'reality', 'pointlio_mid360_real.yaml')
     pointlio_rviz_cfg_dir = os.path.join(rm_nav_bringup_dir, 'rviz', 'pointlio.rviz')
     #################################### POINT_LIO parameters end #####################################
 
@@ -70,7 +72,7 @@ def generate_launch_description():
                 executable='fastlio_mapping',
                 parameters=[
                     fastlio_mid360_params,
-                    {use_sim_time: use_sim_time}
+                    {'use_sim_time': use_sim_time}
                 ],
                 output='screen'
             ),

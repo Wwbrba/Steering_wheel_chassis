@@ -315,8 +315,8 @@ global_costmap:
         transform_tolerance:      0.2                               # 单位为秒
         mapping_mode:             false                             # default off, saves map not for navigation
         map_save_duration:        60.0                              # default 60s, how often to autosave
-        observation_sources:      livox_mark livox_clear
-        livox_mark:
+        observation_sources:      airy_lite_mark airy_lite_clear
+        airy_lite_mark:
           data_type: PointCloud2
           topic: /segmentation/obstacle
           marking: true
@@ -330,7 +330,7 @@ global_costmap:
           filter: "voxel"                                           # default passthrough, apply "voxel", "passthrough", or no filter to sensor data, recommend on
           voxel_min_points: 0                                       # default 0, minimum points per voxel for voxel filter
           clear_after_reading: true                                 # default false, clear the buffer after the layer gets readings from it
-        livox_clear:
+        airy_lite_clear:
           enabled: true                                             # default true, can be toggled on/off with associated service call
           data_type: PointCloud2
           topic: /segmentation/obstacle

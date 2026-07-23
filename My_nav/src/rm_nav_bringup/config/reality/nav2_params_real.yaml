@@ -289,8 +289,8 @@ global_costmap:
         transform_tolerance: 0.2
         mapping_mode: false
         map_save_duration: 60.0
-        observation_sources: livox_mark livox_clear
-        livox_mark:     #wwt 利沃克斯点云标记
+        observation_sources: airy_lite_mark airy_lite_clear
+        airy_lite_mark:     #wwt Airy Lite点云标记
           data_type: PointCloud2
           topic: /segmentation/obstacle
           marking: true
@@ -304,7 +304,7 @@ global_costmap:
           filter: "voxel"
           voxel_min_points: 0
           clear_after_reading: true
-        livox_clear:   #wwt 利沃克斯点云清除
+        airy_lite_clear:   #wwt Airy Lite点云清除
           enabled: true
           data_type: PointCloud2
           topic: /segmentation/obstacle

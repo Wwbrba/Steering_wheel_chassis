@@ -1,5 +1,6 @@
 import os
 from launch import LaunchDescription
+from launch.actions import TimerAction, SetEnvironmentVariable
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 
@@ -11,21 +12,23 @@ def generate_launch_description():
     slam_config = os.path.join(pkg_rm_nav_bringup, 'config_TEB', 'reality', 'mapper_params_online_async_real.yaml')
 
     return LaunchDescription([
+        SetEnvironmentVariable('RMW_IMPLEMENTATION', 'rmw_cyclonedds_cpp'),
         # 1. 只启动官方驱动节点；不要 include humble_start.py，
         #    因为该官方 launch 还会无条件启动它自己的 rviz2。
         Node(
             namespace='rslidar_sdk',
             package='rslidar_sdk',
             executable='rslidar_sdk_node',
-            output='screen',
-            additional_env={'RMW_IMPLEMENTATION': 'rmw_cyclonedds_cpp'}
+            output='screen'
         ),
         
-        # 2. 静态TF：base_link → rslidar（新格式）
+        # 2. 静态TF：base_link → rslidar
         Node(
             package='tf2_ros',
             executable='static_transform_publisher',
-            arguments=['0', '0', '0', '0', '0', '0', 'base_link', 'rslidar'],
+            arguments=['--x', '0', '--y', '0', '--z', '0',
+                       '--roll', '0', '--pitch', '0', '--yaw', '0',
+                       '--frame-id', 'base_link', '--child-frame-id', 'rslidar'],
             output='screen'
         ),
         
@@ -51,24 +54,26 @@ def generate_launch_description():
             output='screen'
         ),
         
-        # 4. 静态TF：odom → base_link（新格式，修复 odom pose 警告）
+        # 4. 静态TF：odom → base_link
         Node(
             package='tf2_ros',
             executable='static_transform_publisher',
-            arguments=['0', '0', '0', '0', '0', '0', 'odom', 'base_link'],
+            arguments=['--x', '0', '--y', '0', '--z', '0',
+                       '--roll', '0', '--pitch', '0', '--yaw', '0',
+                       '--frame-id', 'odom', '--child-frame-id', 'base_link'],
             output='screen'
         ),
         
         # 5. SLAM Toolbox
-        Node(
+        TimerAction(period=3.0, actions=[Node(
             package='slam_toolbox',
             executable='async_slam_toolbox_node',
-            parameters=[slam_config],
+            parameters=[slam_config, {'use_sim_time': False}],
             arguments=['--ros-args', '--log-level', 'info'],
             output='screen'
-        ),
+        )]),
         
-        # 6. 你自己的Rviz2（只启动这一个！）
+        # 6. 你自己的Rviz2
         Node(
             package='rviz2',
             executable='rviz2',

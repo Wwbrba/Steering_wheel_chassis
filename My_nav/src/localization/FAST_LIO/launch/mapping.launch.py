@@ -31,8 +31,9 @@ def generate_launch_description():
         description='Yaml config file path'
     )
     decalre_config_file_cmd = DeclareLaunchArgument(
-        'config_file', default_value='mid360.yaml',
-        description='Config file'
+        # Legacy Livox default: mid360.yaml
+        'config_file', default_value='airy_lite.yaml',
+        description='Config file (Airy Lite by default)'
     )
     declare_rviz_cmd = DeclareLaunchArgument(
         'rviz', default_value='true',

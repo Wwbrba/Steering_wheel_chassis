@@ -40,7 +40,7 @@ Visualization Manager:
           Value: true
         imu_link:
           Value: true
-        livox_frame:
+        rslidar:
           Value: true
         map:
           Value: true
@@ -68,7 +68,7 @@ Visualization Manager:
               {}
             imu_link:
               {}
-            livox_frame:
+            rslidar:
               {}
             wheel_1:
               {}

@@ -91,7 +91,8 @@ IcpNode::IcpNode(const rclcpp::NodeOptions &options)
 
   // Set up the pointcloud subscriber
   std::string pointcloud_topic = this->declare_parameter(
-      "pointcloud_topic", std::string("/livox/lidar/pointcloud"));
+      // Legacy Livox default: /livox/lidar/pointcloud
+      "pointcloud_topic", std::string("/rslidar_points"));
   RCLCPP_INFO(this->get_logger(), "pointcloud_topic: %s",
               pointcloud_topic.c_str());
   auto qos = rclcpp::QoS(rclcpp::KeepLast(10));

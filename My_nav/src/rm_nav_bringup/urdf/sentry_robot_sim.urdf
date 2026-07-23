@@ -187,7 +187,7 @@
   <gazebo reference="imu_link">
     <material>Gazebo/BuildingFrame</material>
   </gazebo>
-  <gazebo reference="livox_frame">
+  <gazebo reference="rslidar">
     <material>Gazebo/LightBlueLaser</material>
   </gazebo>
   <!-- Drive controller plugin-->
@@ -226,13 +226,13 @@
       <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
         <ros>
           <namespace>/</namespace>
-          <remapping>~/out:=/livox/imu</remapping>
+          <remapping>~/out:=/rslidar_imu_data</remapping>
         </ros>
         <frame_name>imu_link</frame_name>
       </plugin>
     </sensor>
   </gazebo>
-  <link name="livox_frame">
+  <link name="rslidar">
     <visual>
       <origin rpy="1.5707963267948966 0 3.141592653589793" xyz="0.025 -0.0265 -0.025"/>
       <geometry>
@@ -240,17 +240,17 @@
       </geometry>
     </visual>
   </link>
-  <joint name="livox_frame_joint" type="fixed">
+  <joint name="rslidar_joint" type="fixed">
     <parent link="base_link"/>
-    <child link="livox_frame"/>
+    <child link="rslidar"/>
     <origin rpy="0 0 0" xyz="0.12 0.0 0.175"/>
   </joint>
-  <gazebo reference="livox_frame">
-    <sensor name="livox_frame" type="ray">
+  <gazebo reference="rslidar">
+    <sensor name="rslidar" type="ray">
       <pose>0 0 0 0 0 0</pose>
       <visualize>true</visualize>
       <update_rate>10</update_rate>
-      <plugin filename="libros2_livox.so" name="livox_frame_plugin">
+      <plugin filename="librobosense_sim.so" name="rslidar_plugin">
         <ray>
           <scan>
             <horizontal>
@@ -280,8 +280,8 @@
         <visualize>false</visualize>
         <samples>30000</samples>
         <downsample>1</downsample>
-        <csv_file_name>/home/ros2/Desktop/MY_nav/install/ros2_livox_simulation/share/ros2_livox_simulation/scan_mode/mid360.csv</csv_file_name>
-        <topic>/livox/lidar</topic>
+        <csv_file_name>/home/nuc/Steering_wheel_chassis/My_nav/install/robosense_sim_ros2/share/robosense_sim_ros2/scan_mode/airy_lite.csv</csv_file_name>
+        <topic>/rslidar_points</topic>
       </plugin>
     </sensor>
   </gazebo>

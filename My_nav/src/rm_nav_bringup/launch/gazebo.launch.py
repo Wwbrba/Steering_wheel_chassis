@@ -35,7 +35,8 @@ def generate_launch_description():
     get_package_share_directory('rm_nav_bringup'), 'config', 'simulation', 'measurement_params_sim.yaml')))
     robot_description = Command(['xacro ', os.path.join(
     get_package_share_directory('rm_nav_bringup'), 'urdf', 'sentry_robot_sim.xacro'),
-    ' xyz:=', launch_params['base_link2livox_frame']['xyz'], ' rpy:=', launch_params['base_link2livox_frame']['rpy']])
+    # Livox: launch_params['base_link2livox_frame']
+    ' xyz:=', launch_params['base_link2rslidar_frame']['xyz'], ' rpy:=', launch_params['base_link2rslidar_frame']['rpy']])
     ################################# robot_description parameters end ################################
 
     # 启动仿真
